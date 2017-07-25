@@ -14,6 +14,8 @@ public class TileAppearing : MonoBehaviour
     public bool removeTile;
     public int seed;
 
+    public GameObject enemy;
+
     //The player
     //The material color of the tile
     private GameObject player;
@@ -61,6 +63,16 @@ public class TileAppearing : MonoBehaviour
                     gameObject.AddComponent<Floor>();
                 }
             }
+        }
+
+        int spawnEnemy = (int)Random.Range(0, 300);
+
+        if (spawnEnemy == 1 &&
+            GetComponent<Floor>() != null)
+        {
+            GameObject spawnedEnemy = Instantiate(enemy, new Vector3(transform.position.x, 0, transform.position.z), Quaternion.identity);
+            spawnedEnemy.transform.position = new Vector3(spawnedEnemy.transform.position.x, spawnedEnemy.transform.localScale.y / 2 + .1f, spawnedEnemy.transform.position.z);
+            spawnedEnemy.GetComponent<Enemy>().speed = 10;
         }
     }
 

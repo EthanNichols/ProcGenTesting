@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerShooting : MonoBehaviour {
 
     public float shootingDelay;
+    public float shootingDistance;
     public GameObject projectile;
 
     private Plane plane = new Plane(Vector3.up, Vector3.zero);
@@ -30,9 +31,11 @@ public class PlayerShooting : MonoBehaviour {
                 Vector3 norm = Vector3.Normalize(new Vector3(hitPoint.x - transform.position.x, 0, hitPoint.z - transform.position.z));
 
                 var proj = Instantiate(projectile, new Vector3(transform.position.x + norm.x, .6f, transform.position.z + norm.z), Quaternion.identity);
+
+                proj.GetComponent<Projectile>().shooter = gameObject;
                 proj.GetComponent<Projectile>().direction = norm;
                 proj.GetComponent<Projectile>().speed = 50;
-                proj.GetComponent<Projectile>().destructionTime = .2f;
+                proj.GetComponent<Projectile>().destructiondistance = shootingDistance;
             }
 
             lastShot = 0;

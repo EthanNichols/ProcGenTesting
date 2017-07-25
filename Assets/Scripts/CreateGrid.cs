@@ -71,6 +71,10 @@ public class CreateGrid : MonoBehaviour
     {
         //Create a list of all the tiles that currently exist
         List<GameObject> tiles = GameObject.FindGameObjectsWithTag("Tile").ToList();
+        if (GameObject.FindGameObjectWithTag("SpecialTile"))
+        {
+            tiles.Add(GameObject.FindGameObjectWithTag("SpecialTile"));
+        }
 
         //Loop through the visible size distance
         for (int x = -visibleDistance - 1; x <= visibleDistance + 1; x++)

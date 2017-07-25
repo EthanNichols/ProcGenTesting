@@ -7,21 +7,27 @@ public class Projectile : MonoBehaviour {
 
     public Vector3 direction;
     public float speed;
-    public float destructionTime;
-    private float timeAlive;
+    public float destructiondistance;
+    public float damage;
+
+    public GameObject shooter;
 
 	// Use this for initialization
 	void Start () {
-        timeAlive = 0;
 	}
 	
 	// Update is called once per frame
 	void Update () {
         transform.position += direction * speed * Time.deltaTime;
 
-        timeAlive += Time.deltaTime;
+        if (shooter == null)
+        {
+            Destroy(gameObject);
+        }
 
-        if (timeAlive >= destructionTime)
+        float distance = Vector3.Distance(shooter.transform.position, transform.position);
+
+        if (distance >= destructiondistance)
         {
             Destroy(gameObject);
         }
@@ -29,8 +35,11 @@ public class Projectile : MonoBehaviour {
 
     void OnCollisionEnter(Collision col)
     {
-        if (col.transform.tag != "Player")
+        if (col.transform.tag != "Player" &&
+            col.transform.tag != "Tile" &&
+            tag != "Enemy")
         {
+            Destroy(col.gameObject);
             Destroy(gameObject);
         }
     }
