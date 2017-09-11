@@ -4,16 +4,20 @@ using UnityEngine;
 
 public class Wall : MonoBehaviour {
 
+    //The size of the tile, the player, and if the tile is visible
     private int tileSize;
     private GameObject player;
     private int TileVisibility;
 
 	// Use this for initialization
 	void Start () {
+
+        //Get information that is needed for the script
         tileSize = GetComponent<TileAppearing>().tileSize;
         player = GameObject.FindGameObjectWithTag("Player");
         TileVisibility = GetComponent<TileAppearing>().visibility;
 
+        //Set a random grey color for the wall
         float grey = Random.value / 20;
         GetComponent<Renderer>().material.color = new Color(grey, grey, grey);
     }
@@ -21,6 +25,7 @@ public class Wall : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+        //The maximum size of the tile
         float setSize = tileSize;
 
         //Get the position of the player and the tile
@@ -30,6 +35,8 @@ public class Wall : MonoBehaviour {
         //Calculate the distance between the player and the tile
         float distance = Vector2.Distance(d1, d2);
 
+        //Calculate the size of the tile
+        //If the tile size is below 0, set the size to 0
         if (distance > tileSize * TileVisibility)
         {
             distance -= tileSize * TileVisibility;
@@ -41,6 +48,7 @@ public class Wall : MonoBehaviour {
             }
         }
 
+        //Set the scale of the object
         transform.localScale = new Vector3(setSize, 5, setSize);
     }
 }

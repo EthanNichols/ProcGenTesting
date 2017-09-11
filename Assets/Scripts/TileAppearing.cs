@@ -14,6 +14,7 @@ public class TileAppearing : MonoBehaviour
     public bool removeTile;
     public int seed;
 
+    //Enemy that can be spawned
     public GameObject enemy;
 
     //The player
@@ -24,7 +25,7 @@ public class TileAppearing : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-
+        //List of traps that have been activated
         List<Vector3> activatedTraps = GameObject.FindGameObjectWithTag("MapGen").GetComponent<CreateGrid>().activatedTraps;
 
         //Set the player
@@ -32,21 +33,30 @@ public class TileAppearing : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
         transform.localScale = new Vector3(0, .1f, 0);
 
+        //Whether the tile is special or not
         bool special = false;
 
+        //Make sure the tile is a shade of grey
         if (GetComponent<Renderer>().material.color.r == GetComponent<Renderer>().material.color.b &&
             GetComponent<Renderer>().material.color.r == GetComponent<Renderer>().material.color.g)
         {
 
+            //Test for a specific shade of grey
             if (GetComponent<Renderer>().material.color.r >= .5 &&
                 GetComponent<Renderer>().material.color.r <= .5002)
             {
+                //Make the tile special
+                //Add the floor component to the tile
                 special = true;
                 gameObject.AddComponent<Floor>();
 
+                //Make sure there is only 1 special tile activated at a time
+                //Make sure the special tile hasn't been activated yet
                 if (GameObject.FindGameObjectsWithTag("SpecialTile").Count() == 0 &&
                     !activatedTraps.Contains(transform.position))
                 {
+                    //Add all the components to make it a special tile
+                    //Add the tile to the activated tile list
                     gameObject.AddComponent<SpecialTile>();
                     tag = "SpecialTile";
                     GameObject.FindGameObjectWithTag("MapGen").GetComponent<CreateGrid>().activatedTraps.Add(transform.position);
@@ -55,24 +65,17 @@ public class TileAppearing : MonoBehaviour
 
             if (!special)
             {
+                //Determine which tiles are walls and floor tiles
                 if (GetComponent<Renderer>().material.color.r < .4 ||
                     GetComponent<Renderer>().material.color.r > .6)
                 {
                     gameObject.AddComponent<Wall>();
+
                 } else {
                     gameObject.AddComponent<Floor>();
+                    gameObject.GetComponent<Floor>().enemy = enemy;
                 }
             }
-        }
-
-        int spawnEnemy = (int)Random.Range(0, 300);
-
-        if (spawnEnemy == 1 &&
-            GetComponent<Floor>() != null)
-        {
-            GameObject spawnedEnemy = Instantiate(enemy, new Vector3(transform.position.x, 0, transform.position.z), Quaternion.identity);
-            spawnedEnemy.transform.position = new Vector3(spawnedEnemy.transform.position.x, spawnedEnemy.transform.localScale.y / 2 + .1f, spawnedEnemy.transform.position.z);
-            spawnedEnemy.GetComponent<Enemy>().speed = 10;
         }
     }
 
@@ -87,16 +90,19 @@ public class TileAppearing : MonoBehaviour
         //Calculate the distance between the player and the tile
         float distance = Vector2.Distance(d1, d2);
 
-        //If the tile can be removed test if it willbe deleted
+        //If the tile can be removed test if it will be deleted
         if (removeTile)
         {
             DeleteTile(distance);
         }
     }
 
+    /// <summary>
+    /// //If the tile is farther than the visible range then delete the tile
+    /// </summary>
+    /// <param name="distance">The distance from the player to the tile</param>
     private void DeleteTile(float distance)
     {
-        //If the tile is farther than the visible range then delete the tile
         if (distance >= tileSize * (visibility + 2))
         {
             Destroy(gameObject);
